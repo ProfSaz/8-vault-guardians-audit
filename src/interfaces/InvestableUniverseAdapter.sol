@@ -7,3 +7,5 @@ interface IInvestableUniverseAdapter {
 // function invest(IERC20 token, uint256 amount) external;
 // function divest(IERC20 token, uint256 amount) external;
 }
+
+// q why no function here ?

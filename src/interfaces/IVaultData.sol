@@ -2,6 +2,7 @@
 pragma solidity 0.8.20;
 
 interface IVaultData {
+    //q why are we keeping track of the ratio of tokens in the protocol, invested in uniswap and also of those invested in aave 
     /**
      * @notice The ratio of vault's underlying asset tokens to invest is set by the vault guardian and is stored in this struct
      * @notice holdAllocation is the ratio of tokens to hold in the vault. This is not invested in Uniswap v2 or Aave v3

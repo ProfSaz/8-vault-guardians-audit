@@ -12,6 +12,8 @@ abstract contract AStaticUSDCData is AStaticWethData {
 
     constructor(address weth, address tokenOne) AStaticWethData(weth) {
         i_tokenOne = IERC20(tokenOne);
+        //q can address zero be passed here
+
     }
 
     /**

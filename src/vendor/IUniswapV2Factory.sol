@@ -4,6 +4,7 @@ pragma solidity 0.8.20;
 
 // https://github.com/Uniswap/v2-core/blob/master/contracts/interfaces/IUniswapV2Factory.sol
 interface IUniswapV2Factory {
+    // q what is the unnamed event output with type uint256 ?
     event PairCreated(address indexed token0, address indexed token1, address pair, uint256);
 
     function feeTo() external view returns (address);
