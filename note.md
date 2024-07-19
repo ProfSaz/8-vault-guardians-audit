@@ -36,3 +36,13 @@ Users can earn DAO tokens by becoming guardians. the DAO is responsible for;
 Updating pricing parameters (q: What Price Parameters)
 
 Getting a cut of all performance of all guardians (q: are dao tokens geting performance from guardians from the fees they command from being a profitable fund manager or elsewhere?)
+
+BY slither 
+
+INFO:Detectors:
+The following unused import(s) in src/interfaces/InvestableUniverseAdapter.sol should be removed:
+        -import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol"; (src/interfaces/InvestableUniverseAdapter.sol#4)
+The following unused import(s) in src/protocol/VaultShares.sol should be removed:
+        -import {DataTypes} from "../vendor/DataTypes.sol"; (src/protocol/VaultShares.sol#8)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unused-imports
+
