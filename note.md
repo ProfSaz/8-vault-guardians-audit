@@ -6,7 +6,7 @@ The guardian is to manage the vault to maximize the vault value for the users wh
 
  in other words the are like hedge funders they are tasked to manage and make yield with erc20 tokens deposited inot the vault by users 
 
- to prevent malicious activites the vault are designed to ensure gardians are only allowed to deposit and withdraw the erc20s inot specific protocols 
+ to prevent malicious activites the vault are designed to ensure gardians are only allowed to deposit and withdraw the erc20s into specific protocols 
 
  Aave Uniswap or just hold (investable universe)
 
