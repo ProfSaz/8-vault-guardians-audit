@@ -28,7 +28,7 @@ interface IUniswapV2Router01 {
         address to,
         uint256 deadline
     ) external returns (uint256 amountA, uint256 amountB);
-
+    // q seem you dont want to use the permit feature for removing  why? and what is the permit feature?
     // function removeLiquidityWithPermit(
     //     address tokenA,
     //     address tokenB,

@@ -60,25 +60,29 @@ contract VaultGuardians is Ownable, VaultGuardiansBase {
         address tokenTwo,
         address vaultGuardiansToken
     )
+    // q why is this set to msg.sender, i thought this was supposed to be own by the dao?
         Ownable(msg.sender)
         VaultGuardiansBase(aavePool, uniswapV2Router, weth, tokenOne, tokenTwo, vaultGuardiansToken)
     {}
 
-    /*
+    /**
      * @notice Updates the stake price for guardians. 
      * @param newStakePrice The new stake price in wei
      */
+
+    //q if this is callable by just the single address that deployed this contract whats the need for a dao
     function updateGuardianStakePrice(uint256 newStakePrice) external onlyOwner {
         s_guardianStakePrice = newStakePrice;
         emit VaultGuardians__UpdatedStakePrice(s_guardianStakePrice, newStakePrice);
     }
 
-    /*
+    /**
      * @notice Updates the percentage shares guardians & Daos get in new vaults
      * @param newCut the new cut
      * @dev this value will be divided by the number of shares whenever a user deposits into a vault
      * @dev historical vaults will not have their cuts updated, only vaults moving forward
      */
+    //q if this is callable by just the single address that deployed this contract whats the need for a dao or is there a sought of mechanism that allows this to be callable after dao agrees?
     function updateGuardianAndDaoCut(uint256 newCut) external onlyOwner {
         s_guardianAndDaoCut = newCut;
         emit VaultGuardians__UpdatedStakePrice(s_guardianAndDaoCut, newCut);
@@ -90,6 +94,8 @@ contract VaultGuardians is Ownable, VaultGuardiansBase {
      * @dev Since this is owned by the DAO, the funds will always go to the DAO. 
      * @param asset The ERC20 to sweep
      */
+
+    //@audit-high there is no mechanism to specify tokens to be swept meaning the entire balance of the protocol can be swept to owners address without checking if its excess or not
     function sweepErc20s(IERC20 asset) external {
         uint256 amount = asset.balanceOf(address(this));
         emit VaultGuardians__SweptTokens(address(asset));
