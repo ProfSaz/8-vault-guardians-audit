@@ -21,6 +21,7 @@ contract VaultShares is ERC4626, IVaultShares, AaveAdapter, UniswapAdapter, Reen
     IERC20 internal immutable i_uniswapLiquidityToken;
     IERC20 internal immutable i_aaveAToken;
     address private immutable i_guardian;
+    //q who are guardians and who are vaultguardians
     address private immutable i_vaultGuardians;
     uint256 private immutable i_guardianAndDaoCut;
     bool private s_isActive;
@@ -46,7 +47,7 @@ contract VaultShares is ERC4626, IVaultShares, AaveAdapter, UniswapAdapter, Reen
         }
         _;
     }
-
+    //q what is the difference between gaurdian and vaultguardian
     modifier onlyVaultGuardians() {
         if (msg.sender != i_vaultGuardians) {
             revert VaultShares__NotVaultGuardianContract();
@@ -103,6 +104,7 @@ contract VaultShares is ERC4626, IVaultShares, AaveAdapter, UniswapAdapter, Reen
         updateHoldingAllocation(constructorData.allocationData);
 
         // External calls
+        //q what is the .aTokenAddress for 
         i_aaveAToken =
             IERC20(IPool(constructorData.aavePool).getReserveData(address(constructorData.asset)).aTokenAddress);
         i_uniswapLiquidityToken = IERC20(i_uniswapFactory.getPair(address(constructorData.asset), address(i_weth)));
@@ -112,6 +114,7 @@ contract VaultShares is ERC4626, IVaultShares, AaveAdapter, UniswapAdapter, Reen
      * @notice Sets the vault as not active, which means that the vault guardian has quit
      * @notice Users will not be able to invest in this vault, however, they will be able to withdraw their deposited assets
      */
+    //q who is the vault guardian and who are guardians 
     function setNotActive() public onlyVaultGuardians isActive {
         s_isActive = false;
         emit NoLongerActive();
@@ -124,6 +127,7 @@ contract VaultShares is ERC4626, IVaultShares, AaveAdapter, UniswapAdapter, Reen
     function updateHoldingAllocation(AllocationData memory tokenAllocationData) public onlyVaultGuardians isActive {
         uint256 totalAllocation = tokenAllocationData.holdAllocation + tokenAllocationData.uniswapAllocation
             + tokenAllocationData.aaveAllocation;
+            // q why are we equating total allocation ot the precision and is there a mechanism or formula to keep this in check
         if (totalAllocation != ALLOCATION_PRECISION) {
             revert VaultShares__AllocationNot100Percent(totalAllocation);
         }
@@ -144,13 +148,14 @@ contract VaultShares is ERC4626, IVaultShares, AaveAdapter, UniswapAdapter, Reen
         nonReentrant
         returns (uint256)
     {
-        if (assets > maxDeposit(receiver)) {
+        if (assets > maxDeposit(receiver)) { 
             revert VaultShares__DepositMoreThanMax(assets, maxDeposit(receiver));
         }
 
         uint256 shares = previewDeposit(assets);
         _deposit(_msgSender(), receiver, assets, shares);
 
+        //q is there no risk of arithmethic overflow and underflow here as precision is not being used
         _mint(i_guardian, shares / i_guardianAndDaoCut);
         _mint(i_vaultGuardians, shares / i_guardianAndDaoCut);
 

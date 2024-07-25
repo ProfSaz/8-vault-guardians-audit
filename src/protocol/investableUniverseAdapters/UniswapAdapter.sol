@@ -18,7 +18,7 @@ contract UniswapAdapter is AStaticUSDCData {
 
     event UniswapInvested(uint256 tokenAmount, uint256 wethAmount, uint256 liquidity);
     event UniswapDivested(uint256 tokenAmount, uint256 wethAmount);
-
+//q why do we have weth and tokenOne in the constructor, and also in the astaticUsdcdata is is that we cannot use them in the astatUSdcdata without calling it in the constructor because they dont seem to point anywhere or initialize any variables?
     constructor(address uniswapRouter, address weth, address tokenOne) AStaticUSDCData(weth, tokenOne) {
         i_uniswapRouter = IUniswapV2Router01(uniswapRouter);
         i_uniswapFactory = IUniswapV2Factory(IUniswapV2Router01(i_uniswapRouter).factory());
@@ -48,6 +48,7 @@ contract UniswapAdapter is AStaticUSDCData {
         s_pathArray = [address(token), address(counterPartyToken)];
 
         bool succ = token.approve(address(i_uniswapRouter), amountOfTokenToSwap);
+        //q transfer or approve failed?
         if (!succ) {
             revert UniswapAdapter__TransferFailed();
         }
@@ -63,12 +64,15 @@ contract UniswapAdapter is AStaticUSDCData {
         if (!succ) {
             revert UniswapAdapter__TransferFailed();
         }
+        //q why are we approving amountOfTokenToSwap + amountOfTokentoSwap which gives the total amount instead of half the amount?
         succ = token.approve(address(i_uniswapRouter), amountOfTokenToSwap + amounts[0]);
         if (!succ) {
-            revert UniswapAdapter__TransferFailed();
+                    revert UniswapAdapter__TransferFailed();
         }
 
         // amounts[1] should be the WETH amount we got back
+        //q where is the liquidity coming from in this function it seem to be undefined and was never used except in the return statement 
+        //q where is the implementation for this as this is just an interface @i_uniswapRouter
         (uint256 tokenAmount, uint256 counterPartyTokenAmount, uint256 liquidity) = i_uniswapRouter.addLiquidity({
             tokenA: address(token),
             tokenB: address(counterPartyToken),
@@ -76,6 +80,7 @@ contract UniswapAdapter is AStaticUSDCData {
             amountBDesired: amounts[1],
             amountAMin: 0,
             amountBMin: 0,
+            //q is this not supposed to be the liquidity pair address
             to: address(this),
             deadline: block.timestamp
         });
@@ -97,6 +102,7 @@ contract UniswapAdapter is AStaticUSDCData {
             liquidity: liquidityAmount,
             amountAMin: 0,
             amountBMin: 0,
+            //q is this not suppose to be the liquidity addrress for the pair
             to: address(this),
             deadline: block.timestamp
         });

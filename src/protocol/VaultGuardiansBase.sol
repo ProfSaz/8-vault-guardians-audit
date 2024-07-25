@@ -42,16 +42,19 @@ import {VaultGuardianToken} from "../dao/VaultGuardianToken.sol";
 
 contract VaultGuardiansBase is AStaticTokenData, IVaultData {
     using SafeERC20 for IERC20;
-
+    //q this error is not used
     error VaultGuardiansBase__NotEnoughWeth(uint256 amount, uint256 amountNeeded);
     error VaultGuardiansBase__NotAGuardian(address guardianAddress, IERC20 token);
+    //q this error is not used 
     error VaultGuardiansBase__CantQuitGuardianWithNonWethVaults(address guardianAddress);
     error VaultGuardiansBase__CantQuitWethWithThisFunction();
     error VaultGuardiansBase__TransferFailed();
+    //q this error is not used in this contract is it used else where
     error VaultGuardiansBase__FeeTooSmall(uint256 fee, uint256 requiredFee);
     error VaultGuardiansBase__NotApprovedToken(address token);
 
     /*//////////////////////////////////////////////////////////////
+    
                            TYPE DECLARATIONS
     //////////////////////////////////////////////////////////////*/
 
@@ -62,10 +65,12 @@ contract VaultGuardiansBase is AStaticTokenData, IVaultData {
     address private immutable i_uniswapV2Router;
     VaultGuardianToken private immutable i_vgToken;
 
+    //q this is not used in this contract and it seem to be private hence cannot be used else where 
     uint256 private constant GUARDIAN_FEE = 0.1 ether;
 
     // DAO updatable values
     uint256 internal s_guardianStakePrice = 10 ether;
+    //q this is not used in this contract and it is marked as internal 
     uint256 internal s_guardianAndDaoCut = 1000;
 
     // The guardian's address mapped to the asset, mapped to the allocation data
@@ -77,13 +82,16 @@ contract VaultGuardiansBase is AStaticTokenData, IVaultData {
     //////////////////////////////////////////////////////////////*/
     event GuardianAdded(address guardianAddress, IERC20 token);
     event GaurdianRemoved(address guardianAddress, IERC20 token);
+    // q this event is not emitted anywhere in this contract
     event InvestedInGuardian(address guardianAddress, IERC20 token, uint256 amount);
+    // q this event is not emitted anywhere in this contract
     event DinvestedFromGuardian(address guardianAddress, IERC20 token, uint256 amount);
     event GuardianUpdatedHoldingAllocation(address guardianAddress, IERC20 token);
 
     /*//////////////////////////////////////////////////////////////
                                MODIFIERS
     //////////////////////////////////////////////////////////////*/
+    //q this modifier checks for zero address what if another address is passed that is not a guardian
     modifier onlyGuardian(IERC20 token) {
         if (address(s_guardians[msg.sender][token]) == address(0)) {
             revert VaultGuardiansBase__NotAGuardian(msg.sender, token);
@@ -120,6 +128,7 @@ contract VaultGuardiansBase is AStaticTokenData, IVaultData {
      * 
      * @param wethAllocationData the allocation data for the WETH vault
      */
+    //q guardians dont tend to send fee here to become guardians 
     function becomeGuardian(AllocationData memory wethAllocationData) external returns (address) {
         VaultShares wethVault =
         new VaultShares(IVaultShares.ConstructorData({
@@ -205,6 +214,7 @@ contract VaultGuardiansBase is AStaticTokenData, IVaultData {
      * See VaultGuardiansBase::quitGuardian()
      * The only difference here, is that this function is for non-WETH vaults
      */
+    //q should probably be renamed to avoid confusion
     function quitGuardian(IERC20 token) external onlyGuardian(token) returns (uint256) {
         if (token == i_weth) {
             revert VaultGuardiansBase__CantQuitWethWithThisFunction();
@@ -237,6 +247,7 @@ contract VaultGuardiansBase is AStaticTokenData, IVaultData {
                            PRIVATE FUNCTIONS
     //////////////////////////////////////////////////////////////*/
     function _quitGuardian(IERC20 token) private returns (uint256) {
+        //q why not add an address zero checker here 
         IVaultShares tokenVault = IVaultShares(s_guardians[msg.sender][token]);
         s_guardians[msg.sender][token] = IVaultShares(address(0));
         emit GaurdianRemoved(msg.sender, token);
